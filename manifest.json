@@ -1,0 +1,37 @@
+{
+  "manifest_version": 3,
+  "name": "Twitter Video Downloader",
+  "version": "1.0",
+  "description": "Download videos from Twitter/X easily",
+  "permissions": [
+    "activeTab",
+    "downloads",
+    "tabs"
+  ],
+  "host_permissions": [
+    "https://twitter.com/*",
+    "https://*.twitter.com/*",
+    "https://x.com/*",
+    "https://*.x.com/*"
+  ],
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://twitter.com/*", "https://*.twitter.com/*", "https://x.com/*", "https://*.x.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

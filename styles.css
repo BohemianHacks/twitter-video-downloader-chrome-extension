@@ -1,0 +1,16 @@
+.twitter-video-downloader-btn {
+    background-color: #1da1f2;
+    color: white;
+    border: none;
+    border-radius: 9999px;
+    padding: 6px 16px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: background-color 0.2s;
+}
+
+.twitter-video-downloader-btn:hover {
+    background-color: #1991db;
+}
