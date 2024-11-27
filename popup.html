@@ -8,40 +8,58 @@
             padding: 10px;
             font-family: Arial, sans-serif;
         }
-        .video-item {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #e1e8ed;
+        .url-display {
+            margin-bottom: 15px;
+            padding: 8px;
+            background-color: #f5f8fa;
             border-radius: 4px;
+            font-size: 12px;
+            word-break: break-all;
+            color: #657786;
         }
-        .download-btn {
+        #download-button {
             background-color: #1da1f2;
             color: white;
             border: none;
             border-radius: 9999px;
-            padding: 4px 12px;
-            font-size: 13px;
+            padding: 8px 16px;
+            font-size: 14px;
             cursor: pointer;
-            float: right;
+            width: 100%;
+            margin: 10px 0;
+            display: none;
+            transition: background-color 0.2s ease;
         }
-        .download-btn:hover {
+        #download-button:hover {
             background-color: #1a91da;
         }
-        .no-videos {
-            color: #657786;
+        #download-status {
+            margin-top: 10px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 13px;
             text-align: center;
-            padding: 20px;
+            background-color: #f5f8fa;
+            display: none;
+            transition: opacity 0.3s ease;
         }
-        .not-twitter {
-            color: #657786;
-            text-align: center;
-            padding: 20px;
+        .error {
+            color: #e0245e;
+            background-color: #ffe8ed !important;
+        }
+        .success {
+            color: #17bf63;
+            background-color: #e8f5ed !important;
         }
     </style>
 </head>
 <body>
     <div id="content">
-        <div id="videos-list"></div>
+        <div class="url-display">
+            当前页面: <span id="current-url"></span>
+        </div>
+        <button id="download-button">下载视频</button>
+        <div id="download-status"></div>
     </div>
     <script src="popup.js"></script>
 </body>

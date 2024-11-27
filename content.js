@@ -1,3 +1,5 @@
+console.log('%c[Content Script] Twitter Video Downloader loaded', 'background: #222; color: #bada55');
+
 // Function to create download button
 function createDownloadButton() {
     const downloadButton = document.createElement('button');
@@ -120,37 +122,80 @@ function extractVideoUrls() {
     return videos;
 }
 
-// Function to handle video download
-function downloadVideo(videoUrl) {
-    if (videoUrl) {
-        console.log('Attempting to download video:', videoUrl);
-        chrome.runtime.sendMessage({
-            type: 'download',
-            url: videoUrl
-        });
+// Function to get video URL from twitsave.com
+async function getTwitsaveVideoUrl(tweetUrl) {
+    try {
+        const apiUrl = `https://twitsave.com/info?url=${encodeURIComponent(tweetUrl)}`;
+        const response = await fetch(apiUrl);
+        const html = await response.text();
+        
+        // Parse the HTML response
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // Find the download section and get the highest quality video URL
+        const downloadSection = doc.querySelector('div.origin-top-right');
+        if (downloadSection) {
+            const qualityLinks = downloadSection.querySelectorAll('a');
+            if (qualityLinks.length > 0) {
+                return qualityLinks[0].href;
+            }
+        }
+        throw new Error('No video URL found');
+    } catch (error) {
+        console.error('Error getting video URL:', error);
+        return null;
     }
 }
 
-// Main function to add download buttons to videos
+// Function to handle video download
+async function downloadVideo(tweetUrl) {
+    try {
+        const videoUrl = await getTwitsaveVideoUrl(tweetUrl);
+        if (videoUrl) {
+            chrome.runtime.sendMessage({
+                type: 'download',
+                url: videoUrl
+            });
+        } else {
+            console.error('Failed to get video URL');
+        }
+    } catch (error) {
+        console.error('Error downloading video:', error);
+    }
+}
+
+// Function to add download buttons to videos
 function addDownloadButtons() {
     const articles = document.querySelectorAll('article');
     
     articles.forEach(article => {
-        // Check if button already exists
+        // Check if we already added a button to this article
         if (article.querySelector('.twitter-video-downloader-btn')) {
             return;
         }
 
-        const videoUrl = extractVideoUrl(article);
-        if (videoUrl) {
-            const downloadButton = createDownloadButton();
+        // Check if article contains video
+        const hasVideo = article.querySelector('video') !== null;
+        if (!hasVideo) {
+            return;
+        }
+
+        // Create and add download button
+        const downloadButton = createDownloadButton();
+        
+        // Get tweet URL
+        const tweetLink = article.querySelector('a[href*="/status/"]');
+        const tweetUrl = tweetLink ? 'https://twitter.com' + tweetLink.getAttribute('href') : null;
+        
+        if (tweetUrl) {
             downloadButton.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                downloadVideo(videoUrl);
+                downloadVideo(tweetUrl);
             });
 
-            // Find a suitable place to insert the button
+            // Find a good place to insert the button
             const actionBar = article.querySelector('[role="group"]');
             if (actionBar) {
                 actionBar.appendChild(downloadButton);
@@ -186,9 +231,38 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Listen for messages from popup
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "getVideos") {
+// 监听来自popup的消息
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    console.log('%c[Content Script] Received message:', 'background: #222; color: #bada55', request);
+    
+    if (request.action === "getVideoInfo") {
+        try {
+            console.log('[Content Script] Checking for video...');
+            // 检查是否是视频推文
+            const hasVideo = document.querySelector('video') !== null;
+            console.log('[Content Script] Has video:', hasVideo);
+            
+            // 获取当前页面URL
+            const url = window.location.href;
+            console.log('[Content Script] Current URL:', url);
+            
+            // 发送响应
+            sendResponse({
+                url: url,
+                hasVideo: hasVideo,
+                success: true
+            });
+            
+            console.log('[Content Script] Response sent successfully');
+        } catch (error) {
+            console.error('[Content Script] Error:', error);
+            sendResponse({
+                success: false,
+                error: error.message
+            });
+        }
+        return true; // 保持消息通道开放
+    } else if (request.action === "getVideos") {
         console.log('收到获取视频请求');
         const videos = extractVideoUrls();
         console.log('返回视频列表:', videos);
