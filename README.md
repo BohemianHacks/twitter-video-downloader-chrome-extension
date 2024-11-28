@@ -1,34 +1,40 @@
 # Twitter Video Downloader Chrome Extension
 
-一个简单的Chrome扩展，用于下载Twitter上的视频。
+A simple Chrome extension for downloading videos from Twitter.
 
-## 功能
+## Features
 
-- 自动检测Twitter页面上的视频
-- 在每个视频旁边添加下载按钮
-- 支持视频直接下载到本地
+- Automatically detect videos on Twitter pages
+- Add a download button next to each video
+- Support downloading videos directly to local
 
-## 安装说明
+## Installation instructions
 
-1. 下载或克隆此仓库到本地
-2. 打开Chrome浏览器，进入扩展管理页面（chrome://extensions/）
-3. 开启右上角的"开发者模式"
-4. 点击"加载已解压的扩展程序"
-5. 选择本扩展的文件夹
+1. Download or clone this repository to local
 
-## 使用方法
+2. Open the Chrome browser and enter the extension management page (chrome://extensions/)
 
-1. 安装扩展后，访问Twitter网站
-2. 当页面上出现视频时，会自动在视频下方显示"下载视频"按钮
-3. 点击按钮即可下载视频
+3. Enable "Developer mode" in the upper right corner
 
-## 注意事项
+4. Click "Load unpacked extension"
 
-- 仅支持公开的Twitter视频
-- 需要登录Twitter才能访问和下载视频
-- 某些视频可能因为Twitter的限制无法下载
+5. Select the folder for this extension
 
-## 技术栈
+## How to use
+
+1. After installing the extension, visit the Twitter website
+
+2. When a video appears on the page, the "Download Video" button will automatically appear below the video
+
+3. Click the button to download the video
+
+## Notes
+
+- Only public Twitter videos are supported
+- You need to log in to Twitter to access and download videos
+- Some videos may not be downloaded due to Twitter restrictions
+
+## Technology stack
 
 - JavaScript
 - Chrome Extension API
